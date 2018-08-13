@@ -1,25 +1,44 @@
 'use strict';
 
 // create product constructor
-function Product(filepath, heading) {
-  this.filepath = filepath;
+function Product(filename, heading) {
+  this.filename = filename;
   this.heading = heading;
   this.votes = 0;
   this.displays = 0;
+  this.available = true;
   Product.allProducts.push(this);
 }
 
 Product.allProducts = [];
 
-// grab images
-const img1 = document.getElementById('img-1');
-const img2 = document.getElementById('img-2');
-const img3 = document.getElementById('img-3');
+// grab images and product names
+const imgArr = [
+  document.getElementById('img-1'),
+  document.getElementById('img-2'),
+  document.getElementById('img-3'),
+];
 
-// random image grabber
-function randomImage() {
-  const result = Math.floor(Math.random() * Product.allProducts.length);
-  return Product.allProducts[result];
+const h3Arr = [
+  document.getElementById('img1-name'),
+  document.getElementById('img2-name'),
+  document.getElementById('img3-name')
+];
+
+// generate random number for products
+function randomProductGenerator() {
+  return Math.floor(Math.random() * Product.allProducts.length);
+}
+
+// places random products
+function productPlacer() {
+  for (let i = 0; i < 3; i++) {
+    let j = randomProductGenerator();
+    const pickedProduct = Product.allProducts[j];
+    imgArr[i].src = `img/products/${pickedProduct.filename}`;
+    imgArr[i].alt = pickedProduct.heading;
+    h3Arr[i].innerText = pickedProduct.heading;
+  }
 }
 
 // create all products

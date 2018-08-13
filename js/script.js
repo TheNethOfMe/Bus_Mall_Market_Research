@@ -1,16 +1,33 @@
 'use strict';
 
+let clickCounter = 0;
+
+function voteTally(a, b) {
+  if (a.votes < b.votes) {
+    return 1;
+  }
+  if (a.votes > b.votes) {
+    return -1;
+  }
+  return 0;
+}
+
 // create product constructor
 function Product(filename, heading) {
   this.filename = filename;
   this.heading = heading;
   this.votes = 0;
   this.displays = 0;
-  this.status = 0;
+  this.status = 'available'; // determins if product can currently be used
   Product.allProducts.push(this);
 }
 
 Product.allProducts = [];
+
+// grab all voting buttons
+const voteBtn1 = document.getElementById('voting-btn-1');
+const voteBtn2 = document.getElementById('voting-btn-2');
+const voteBtn3 = document.getElementById('voting-btn-3');
 
 // grab images and product names
 const imgArr = [
@@ -30,17 +47,42 @@ function randomProductGenerator() {
   return Math.floor(Math.random() * Product.allProducts.length);
 }
 
+// function for casting vote
+function castVote(x) {
+  clickCounter++;
+  const chosenProduct = Product.allProducts.find((product) => {
+    if (product.heading === h3Arr[x].innerText) {
+      return product;
+    }
+  });
+  chosenProduct.votes++;
+  if (clickCounter < 25) {
+    productPicker();
+  } else {
+    const finalResult = [];
+    Product.allProducts.forEach((item) => {
+      let result = {};
+      result.name = item.heading;
+      result.votes = item.votes;
+      result.chosenPercentage = Math.floor((item.votes / item.displays) * 100);
+      finalResult.push(result);
+    });
+    console.log(finalResult.sort(voteTally));
+  }
+}
+
 // places random products
-function productPlacer() {
-  // update product status
-  // 0 = available; 1 = currently in use; 2 = was just used
+function productPicker() {
   Product.allProducts.forEach((product) => {
-    if (product.status === 1) { product.status++; }
-    if (product.status === 2) { product.status = 0; }
+    if (product.status === 'displayed') {
+      product.status = 'used';
+    } else if (product.status === 'used') {
+      product.status = 'available';
+    }
   });
   for (let i = 0; i < 3; i++) {
     let j = randomProductGenerator();
-    while (Product.allProducts[j].status) {
+    while (Product.allProducts[j].status !== 'available') {
       j = randomProductGenerator();
     }
     const pickedProduct = Product.allProducts[j];
@@ -50,8 +92,7 @@ function productPlacer() {
     h3Arr[i].innerText = pickedProduct.heading;
     // adjust picked product properties
     pickedProduct.displays += 1;
-    pickedProduct.status++;
-    console.log(pickedProduct);
+    pickedProduct.status = 'displayed';
   }
 }
 
@@ -76,3 +117,16 @@ new Product('unicorn.jpg', 'Unicorn Meat');
 new Product('usb.gif', 'Tenticle USB Drive');
 new Product('water-can.jpg', 'Inverse Watering Can');
 new Product('wine-glass.jpg', 'Spherical Wine Glass');
+
+// event listeners
+voteBtn1.addEventListener('click', () => {
+  castVote(0);
+});
+voteBtn2.addEventListener('click', () => {
+  castVote(1);
+});
+voteBtn3.addEventListener('click', () => {
+  castVote(2);
+});
+
+productPicker();

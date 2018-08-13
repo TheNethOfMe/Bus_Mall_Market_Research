@@ -42,6 +42,10 @@ const h3Arr = [
   document.getElementById('img3-name')
 ];
 
+// grab sections
+const votePanel = document.getElementById('vote-panel');
+const resultPanel = document.getElementById('result-panel');
+
 // generate random number for products
 function randomProductGenerator() {
   return Math.floor(Math.random() * Product.allProducts.length);
@@ -59,15 +63,7 @@ function castVote(x) {
   if (clickCounter < 25) {
     productPicker();
   } else {
-    const finalResult = [];
-    Product.allProducts.forEach((item) => {
-      let result = {};
-      result.name = item.heading;
-      result.votes = item.votes;
-      result.chosenPercentage = Math.floor((item.votes / item.displays) * 100);
-      finalResult.push(result);
-    });
-    console.log(finalResult.sort(voteTally));
+    displayResults();
   }
 }
 
@@ -94,6 +90,28 @@ function productPicker() {
     pickedProduct.displays += 1;
     pickedProduct.status = 'displayed';
   }
+}
+
+// function to display results
+function displayResults() {
+  votePanel.classList.add('hidden');
+  resultPanel.classList.remove('hidden');
+  const newList = document.createElement('ul');
+  const finalResult = Product.allProducts.sort(voteTally);
+  finalResult.forEach((item) => {
+    const newItem = document.createElement('li');
+    const itemHead = document.createElement('h4');
+    const headText = document.createTextNode(item.heading);
+    newItem.appendChild(itemHead).appendChild(headText);
+    const itemVotes = document.createElement('p');
+    const voteText = document.createTextNode(`Votes: ${item.votes}`);
+    newItem.appendChild(itemVotes).appendChild(voteText);
+    const itemPercent = document.createElement('p');
+    const percentText = document.createTextNode(`You voted for this ${Math.floor((item.votes / item.displays) * 100)}% of the time.`);
+    newItem.appendChild(itemPercent).appendChild(percentText);
+    newList.appendChild(newItem);
+  });
+  resultPanel.appendChild(newList);
 }
 
 // create all products

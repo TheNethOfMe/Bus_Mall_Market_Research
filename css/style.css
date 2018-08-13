@@ -73,6 +73,11 @@ h3 {
   width: 60%;
 }
 
+/* RESULTS */
+h4 {
+  color: darkmagenta;
+}
+
 /* INFO SECTION */
 .info-section {
   background-color: lightsalmon;

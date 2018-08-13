@@ -6,7 +6,7 @@ function Product(filename, heading) {
   this.heading = heading;
   this.votes = 0;
   this.displays = 0;
-  this.available = true;
+  this.status = 0;
   Product.allProducts.push(this);
 }
 
@@ -32,12 +32,26 @@ function randomProductGenerator() {
 
 // places random products
 function productPlacer() {
+  // update product status
+  // 0 = available; 1 = currently in use; 2 = was just used
+  Product.allProducts.forEach((product) => {
+    if (product.status === 1) { product.status++; }
+    if (product.status === 2) { product.status = 0; }
+  });
   for (let i = 0; i < 3; i++) {
     let j = randomProductGenerator();
+    while (Product.allProducts[j].status) {
+      j = randomProductGenerator();
+    }
     const pickedProduct = Product.allProducts[j];
+    // display picked product
     imgArr[i].src = `img/products/${pickedProduct.filename}`;
     imgArr[i].alt = pickedProduct.heading;
     h3Arr[i].innerText = pickedProduct.heading;
+    // adjust picked product properties
+    pickedProduct.displays += 1;
+    pickedProduct.status++;
+    console.log(pickedProduct);
   }
 }
 
@@ -60,5 +74,5 @@ new Product('sweep.png', 'Dusting Baby Onesie');
 new Product('tauntaun.jpg', 'Tauntaun Sleeping Bag');
 new Product('unicorn.jpg', 'Unicorn Meat');
 new Product('usb.gif', 'Tenticle USB Drive');
-new Product('wanter-can.jpg', 'Inverse Watering Can');
+new Product('water-can.jpg', 'Inverse Watering Can');
 new Product('wine-glass.jpg', 'Spherical Wine Glass');

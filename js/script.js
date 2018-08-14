@@ -68,28 +68,23 @@ function castVote(x) {
 }
 
 // places random products
+let indexTracker = [];
 function productPicker() {
-  Product.allProducts.forEach((product) => {
-    if (product.status === 'displayed') {
-      product.status = 'used';
-    } else if (product.status === 'used') {
-      product.status = 'available';
-    }
-  });
+  let currentDisplays = [];
+  const previousDisplay = indexTracker;
   for (let i = 0; i < 3; i++) {
     let j = randomProductGenerator();
-    while (Product.allProducts[j].status !== 'available') {
+    while (currentDisplays.includes(j) || previousDisplay.includes(j)) {
       j = randomProductGenerator();
     }
+    currentDisplays.push(j);
     const pickedProduct = Product.allProducts[j];
-    // display picked product
     imgArr[i].src = `img/products/${pickedProduct.filename}`;
     imgArr[i].alt = pickedProduct.heading;
     h3Arr[i].innerText = pickedProduct.heading;
-    // adjust picked product properties
     pickedProduct.displays += 1;
-    pickedProduct.status = 'displayed';
   }
+  indexTracker = currentDisplays;
 }
 
 // function to display results

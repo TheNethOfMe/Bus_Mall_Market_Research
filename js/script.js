@@ -1,9 +1,11 @@
 'use strict';
 
-let clickCounter = 5;
+// create clickCounter and appends it to the h2 for the user
+let clickCounter = 25;
 const voteCounter = document.getElementById('votes-remain');
 voteCounter.innerText = clickCounter;
 
+// function to order the products by votes after user is out of votes
 function voteTally(a, b) {
   if (a.votes < b.votes) {
     return 1;
@@ -30,6 +32,7 @@ const voteBtnArr = [];
 const h3Arr = [];
 const imgArr = [];
 
+// function to generate voting areas
 function generateVoteAreas() {
   for (let i = 0; i < 3; i++) {
     const newVotingArea = document.createElement('div');
@@ -144,10 +147,11 @@ new Product('usb.gif', 'Tenticle USB Drive');
 new Product('water-can.jpg', 'Inverse Watering Can');
 new Product('wine-glass.jpg', 'Spherical Wine Glass');
 
+// generate the voting areas and populate them for the first time
 generateVoteAreas();
 productPicker();
 
-// event listeners
+// event listeners for voting buttons
 for (let i = 0; i < voteBtnArr.length; i++) {
   voteBtnArr[i].addEventListener('click', () => {
     castVote(i);

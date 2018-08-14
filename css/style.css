@@ -89,22 +89,11 @@ h3 {
 }
 
 .info-area {
-  width: 70%;
+  width: 90%;
 }
 
 p {
   margin: 12px;
-}
-
-/* RESULTS */
-.result-area {
-  background-color: darkolivegreen;
-  min-height: 100px;
-  width: 30%;
-}
-
-h4 {
-  color: magenta;
 }
 
 /* FOOTER */

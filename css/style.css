@@ -25,7 +25,7 @@ h1 {
 /* MAIN */
 main {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin: 0 auto;
   width: 80%;
 }
@@ -44,10 +44,10 @@ section {
 /* VOTING SECTION */
 .voting-section {
   background-color: lightseagreen;
-  width: 30%;
+  width: 100%;
 }
 
-.voting-area {
+.voting-group {
   background-color: blue;
   display: flex;
   flex-direction: row;
@@ -56,7 +56,13 @@ section {
 
 .voting-display {
   background-color: greenyellow;
+  display: inline-block;
+  margin: 8px;
   width: 90%;
+}
+
+.voting-display button {
+  width: 100%;
 }
 
 h3 {
@@ -73,19 +79,31 @@ h3 {
   width: 60%;
 }
 
-/* RESULTS */
-h4 {
-  color: darkmagenta;
-}
-
 /* INFO SECTION */
 .info-section {
   background-color: lightsalmon;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.info-area {
   width: 70%;
 }
 
 p {
   margin: 12px;
+}
+
+/* RESULTS */
+.result-area {
+  background-color: darkolivegreen;
+  min-height: 100px;
+  width: 30%;
+}
+
+h4 {
+  color: magenta;
 }
 
 /* FOOTER */

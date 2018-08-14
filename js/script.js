@@ -2,12 +2,12 @@
 
 // TO DO
 // Dynamically create vote area HTML and event listeners
-// Let user know how many more votes they have
 // Break out most of the forEach logic from final results out into own function
 // Better name for heading property
-// Turn the While into a Do While
 
-let clickCounter = 0;
+let clickCounter = 25;
+const voteCounter = document.getElementById('votes-remain');
+voteCounter.innerText = clickCounter;
 
 function voteTally(a, b) {
   if (a.votes < b.votes) {
@@ -59,18 +59,19 @@ function randomProductGenerator() {
 
 // function for casting vote
 function castVote(x) {
-  clickCounter++;
+  clickCounter--;
   const chosenProduct = Product.allProducts.find((product) => {
     if (product.heading === h3Arr[x].innerText) {
       return product;
     }
   });
   chosenProduct.votes++;
-  if (clickCounter < 25) {
+  if (clickCounter > 0) {
     productPicker();
   } else {
     displayResults();
   }
+  voteCounter.innerText = clickCounter;
 }
 
 // places random products
@@ -80,9 +81,9 @@ function productPicker() {
   const previousDisplay = indexTracker;
   for (let i = 0; i < 3; i++) {
     let j = randomProductGenerator();
-    while (currentDisplays.includes(j) || previousDisplay.includes(j)) {
+    do {
       j = randomProductGenerator();
-    }
+    } while (currentDisplays.includes(j) || previousDisplay.includes(j));
     currentDisplays.push(j);
     const pickedProduct = Product.allProducts[j];
     imgArr[i].src = `img/products/${pickedProduct.filename}`;

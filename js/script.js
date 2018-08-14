@@ -55,7 +55,9 @@ function generateVoteAreas() {
 
 // grab sections
 const votePanel = document.getElementById('vote-panel');
-const resultPanel = document.getElementById('result-panel');
+const votesChart = document.getElementsByTagName('canvas')[0].getContext('2d');
+const percentageChart = document.getElementsByTagName('canvas')[1].getContext('2d');
+const informationPanel = document.getElementById('information');
 
 // generate random number for products
 function randomProductGenerator() {
@@ -102,27 +104,50 @@ function productPicker() {
 // function to display results
 function displayResults() {
   votePanel.classList.add('hidden');
-  resultPanel.classList.remove('hidden');
-  const newList = document.createElement('ul');
+  informationPanel.classList.add('hidden');
+  let voteLabels = [];
+  let percentageLabels = [];
+  let voteData = [];
+  let votePercentage = [];
   const finalResult = Product.allProducts.sort(voteTally);
   finalResult.forEach((item) => {
-    const newItem = document.createElement('li');
-    const itemHead = document.createElement('h4');
-    const headText = document.createTextNode(item.description);
-    newItem.appendChild(itemHead).appendChild(headText);
-    const itemVotes = document.createElement('p');
-    const voteText = document.createTextNode(`Votes: ${item.votes}`);
-    newItem.appendChild(itemVotes).appendChild(voteText);
-    const itemPercent = document.createElement('p');
-    const percentText = item.displays ? (
-      document.createTextNode(`You voted for this ${Math.floor((item.votes / item.displays) * 100)}% of the time.`)
-    ) : (
-      document.createTextNode('This item wasn\'t displayed')
-    );
-    newItem.appendChild(itemPercent).appendChild(percentText);
-    newList.appendChild(newItem);
+    if (item.votes) {
+      voteLabels.push(item.description);
+      voteData.push(item.votes);
+    }
+    if (item.displays) {
+      votePercentage.push(Math.floor((item.votes / item.displays) * 100));
+      percentageLabels.push(item.description);
+    }
   });
-  resultPanel.appendChild(newList);
+  generateChart('Percentage of Votes', percentageLabels, votePercentage, 'horizontalBar', percentageChart);
+  generateChart('Number of Votes', voteLabels, voteData, 'pie', votesChart);
+}
+
+// create a chart
+function generateChart(legendLabel, productLabels, chartData, chartType, canvas) {
+  const colorArr = ['#4286f4', '#08a50a', '#aa0cad', '#49d1c8', '#b73709', '#f21d1d', '#4a0a7f'];
+  let bgColors = [];
+  productLabels.forEach((item, i) => {
+    bgColors.push(colorArr[i % colorArr.length]);
+  });
+  new Chart(canvas, { // eslint-disable-line
+    type: chartType,
+    data: {
+      labels: productLabels,
+      datasets: [
+        {
+          label: legendLabel,
+          data: chartData,
+          backgroundColor: bgColors,
+          borderColor: '#333',
+          hoverBackgroundColor: 'yellow',
+          borderWidth: 2,
+          hoverBorderWidth: 0,
+        }
+      ]
+    }
+  });
 }
 
 // create all products

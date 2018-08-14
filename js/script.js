@@ -1,5 +1,12 @@
 'use strict';
 
+// TO DO
+// Dynamically create vote area HTML and event listeners
+// Let user know how many more votes they have
+// Break out most of the forEach logic from final results out into own function
+// Better name for heading property
+// Turn the While into a Do While
+
 let clickCounter = 0;
 
 function voteTally(a, b) {
@@ -18,7 +25,6 @@ function Product(filename, heading) {
   this.heading = heading;
   this.votes = 0;
   this.displays = 0;
-  this.status = 'available'; // determins if product can currently be used
   Product.allProducts.push(this);
 }
 

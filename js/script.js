@@ -1,11 +1,6 @@
 'use strict';
 
-// TO DO
-// Dynamically create vote area HTML and event listeners
-// Break out most of the forEach logic from final results out into own function
-// Better name for heading property
-
-let clickCounter = 25;
+let clickCounter = 5;
 const voteCounter = document.getElementById('votes-remain');
 voteCounter.innerText = clickCounter;
 
@@ -20,33 +15,40 @@ function voteTally(a, b) {
 }
 
 // create product constructor
-function Product(filename, heading) {
+function Product(filename, description) {
   this.filename = filename;
-  this.heading = heading;
+  this.description = description;
   this.votes = 0;
   this.displays = 0;
   Product.allProducts.push(this);
 }
-
 Product.allProducts = [];
 
-// grab all voting buttons
-const voteBtn1 = document.getElementById('voting-btn-1');
-const voteBtn2 = document.getElementById('voting-btn-2');
-const voteBtn3 = document.getElementById('voting-btn-3');
+// variables to hold arrays of dynamically generated elements
+const votingArea = document.getElementById('voting-area');
+const voteBtnArr = [];
+const h3Arr = [];
+const imgArr = [];
 
-// grab images and product names
-const imgArr = [
-  document.getElementById('img-1'),
-  document.getElementById('img-2'),
-  document.getElementById('img-3'),
-];
-
-const h3Arr = [
-  document.getElementById('img1-name'),
-  document.getElementById('img2-name'),
-  document.getElementById('img3-name')
-];
+function generateVoteAreas() {
+  for (let i = 0; i < 3; i++) {
+    const newVotingArea = document.createElement('div');
+    newVotingArea.classList.add('voting-display');
+    const newVotingButton = document.createElement('button');
+    newVotingButton.innerText = 'VOTE!';
+    newVotingButton.classList.add('voting-button');
+    voteBtnArr.push(newVotingButton);
+    newVotingArea.appendChild(newVotingButton);
+    const newVoteH3 = document.createElement('h3');
+    h3Arr.push(newVoteH3);
+    newVotingArea.appendChild(newVoteH3);
+    const newImgTag = document.createElement('img');
+    newImgTag.classList.add('product-image');
+    imgArr.push(newImgTag);
+    newVotingArea.appendChild(newImgTag);
+    votingArea.appendChild(newVotingArea);
+  }
+}
 
 // grab sections
 const votePanel = document.getElementById('vote-panel');
@@ -61,7 +63,7 @@ function randomProductGenerator() {
 function castVote(x) {
   clickCounter--;
   const chosenProduct = Product.allProducts.find((product) => {
-    if (product.heading === h3Arr[x].innerText) {
+    if (product.description === h3Arr[x].innerText) {
       return product;
     }
   });
@@ -87,8 +89,8 @@ function productPicker() {
     currentDisplays.push(j);
     const pickedProduct = Product.allProducts[j];
     imgArr[i].src = `img/products/${pickedProduct.filename}`;
-    imgArr[i].alt = pickedProduct.heading;
-    h3Arr[i].innerText = pickedProduct.heading;
+    imgArr[i].alt = pickedProduct.description;
+    h3Arr[i].innerText = pickedProduct.description;
     pickedProduct.displays += 1;
   }
   indexTracker = currentDisplays;
@@ -103,13 +105,17 @@ function displayResults() {
   finalResult.forEach((item) => {
     const newItem = document.createElement('li');
     const itemHead = document.createElement('h4');
-    const headText = document.createTextNode(item.heading);
+    const headText = document.createTextNode(item.description);
     newItem.appendChild(itemHead).appendChild(headText);
     const itemVotes = document.createElement('p');
     const voteText = document.createTextNode(`Votes: ${item.votes}`);
     newItem.appendChild(itemVotes).appendChild(voteText);
     const itemPercent = document.createElement('p');
-    const percentText = document.createTextNode(`You voted for this ${Math.floor((item.votes / item.displays) * 100)}% of the time.`);
+    const percentText = item.displays ? (
+      document.createTextNode(`You voted for this ${Math.floor((item.votes / item.displays) * 100)}% of the time.`)
+    ) : (
+      document.createTextNode('This item wasn\'t displayed')
+    );
     newItem.appendChild(itemPercent).appendChild(percentText);
     newList.appendChild(newItem);
   });
@@ -138,15 +144,12 @@ new Product('usb.gif', 'Tenticle USB Drive');
 new Product('water-can.jpg', 'Inverse Watering Can');
 new Product('wine-glass.jpg', 'Spherical Wine Glass');
 
-// event listeners
-voteBtn1.addEventListener('click', () => {
-  castVote(0);
-});
-voteBtn2.addEventListener('click', () => {
-  castVote(1);
-});
-voteBtn3.addEventListener('click', () => {
-  castVote(2);
-});
-
+generateVoteAreas();
 productPicker();
+
+// event listeners
+for (let i = 0; i < voteBtnArr.length; i++) {
+  voteBtnArr[i].addEventListener('click', () => {
+    castVote(i);
+  });
+}

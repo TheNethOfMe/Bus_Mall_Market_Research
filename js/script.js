@@ -1,30 +1,16 @@
 'use strict';
 
+// CODE FOR WEB SITE GENERATION *****************************
 // create clickCounter and appends it to the h2 for the user
-let clickCounter = 25;
 const voteCounter = document.getElementById('votes-remain');
+let clickCounter = 25;
 voteCounter.innerText = clickCounter;
 
-// function to order the products by votes after user is out of votes
-function voteTally(a, b) {
-  if (a.votes < b.votes) {
-    return 1;
-  }
-  if (a.votes > b.votes) {
-    return -1;
-  }
-  return 0;
-}
-
-// create product constructor
-function Product(filename, description) {
-  this.filename = filename;
-  this.description = description;
-  this.votes = 0;
-  this.displays = 0;
-  Product.allProducts.push(this);
-}
-Product.allProducts = [];
+// grab sections
+const votePanel = document.getElementById('vote-panel');
+const votesChart = document.getElementsByTagName('canvas')[0].getContext('2d');
+const percentageChart = document.getElementsByTagName('canvas')[1].getContext('2d');
+const informationPanel = document.getElementById('information');
 
 // variables to hold arrays of dynamically generated elements
 const votingArea = document.getElementById('voting-area');
@@ -53,15 +39,25 @@ function generateVoteAreas() {
   }
 }
 
-// grab sections
-const votePanel = document.getElementById('vote-panel');
-const votesChart = document.getElementsByTagName('canvas')[0].getContext('2d');
-const percentageChart = document.getElementsByTagName('canvas')[1].getContext('2d');
-const informationPanel = document.getElementById('information');
-
-// generate random number for products
-function randomProductGenerator() {
-  return Math.floor(Math.random() * Product.allProducts.length);
+// CODE FOR PLACING IMAGES ON SITE & VOTING ***********************
+// places random products
+let indexTracker = [];
+function productPicker() {
+  let currentDisplays = [];
+  const previousDisplay = indexTracker;
+  for (let i = 0; i < 3; i++) {
+    let j;
+    do {
+      j = Math.floor(Math.random() * Product.allProducts.length);
+    } while (currentDisplays.includes(j) || previousDisplay.includes(j));
+    currentDisplays.push(j);
+    const pickedProduct = Product.allProducts[j];
+    imgArr[i].src = `img/products/${pickedProduct.filename}`;
+    imgArr[i].alt = pickedProduct.description;
+    h3Arr[i].innerText = pickedProduct.description;
+    pickedProduct.displays += 1;
+  }
+  indexTracker = currentDisplays;
 }
 
 // function for casting vote
@@ -81,24 +77,16 @@ function castVote(x) {
   voteCounter.innerText = clickCounter;
 }
 
-// places random products
-let indexTracker = [];
-function productPicker() {
-  let currentDisplays = [];
-  const previousDisplay = indexTracker;
-  for (let i = 0; i < 3; i++) {
-    let j = randomProductGenerator();
-    do {
-      j = randomProductGenerator();
-    } while (currentDisplays.includes(j) || previousDisplay.includes(j));
-    currentDisplays.push(j);
-    const pickedProduct = Product.allProducts[j];
-    imgArr[i].src = `img/products/${pickedProduct.filename}`;
-    imgArr[i].alt = pickedProduct.description;
-    h3Arr[i].innerText = pickedProduct.description;
-    pickedProduct.displays += 1;
+// CODE FOR RESULTS *************************************************
+// function to order the products by votes after user is out of votes
+function voteTally(a, b) {
+  if (a.votes < b.votes) {
+    return 1;
   }
-  indexTracker = currentDisplays;
+  if (a.votes > b.votes) {
+    return -1;
+  }
+  return 0;
 }
 
 // function to display results
@@ -106,21 +94,25 @@ function displayResults() {
   votePanel.classList.add('hidden');
   informationPanel.classList.add('hidden');
   let voteLabels = [];
-  let percentageLabels = [];
+  let allLabels = [];
   let voteData = [];
-  let votePercentage = [];
+  let allTimePercentage = [];
   const finalResult = Product.allProducts.sort(voteTally);
   finalResult.forEach((item) => {
+    item.votesAllTime += item.votes;
+    item.displaysAllTime += item.displays;
+    console.log(item.filename, item.displaysAllTime);
     if (item.votes) {
       voteLabels.push(item.description);
       voteData.push(item.votes);
     }
-    if (item.votes) {
-      votePercentage.push(Math.floor((item.votes / item.displays) * 100));
-      percentageLabels.push(item.description);
+    if (item.displaysAllTime) {
+      allTimePercentage.push(Math.floor((item.votesAllTime / item.displaysAllTime) * 100));
+      allLabels.push(item.description);
     }
+    saveVotesAndDisplays(item);
   });
-  generateChart('Percentage of Votes', percentageLabels, votePercentage, 'horizontalBar', percentageChart);
+  generateChart('Percentage of Votes (All Time)', allLabels, allTimePercentage, 'horizontalBar', percentageChart);
   generateChart('Number of Votes', voteLabels, voteData, 'pie', votesChart);
 }
 
@@ -150,6 +142,19 @@ function generateChart(legendLabel, productLabels, chartData, chartType, canvas)
   });
 }
 
+// CODE FOR PRODUCT CREATION ****************************
+// create product constructor
+function Product(filename, description) {
+  this.filename = filename;
+  this.description = description;
+  this.votes = 0;
+  this.displays = 0;
+  this.votesAllTime = 0;
+  this.displaysAllTime = 0;
+  Product.allProducts.push(this);
+}
+Product.allProducts = [];
+
 // create all products
 new Product('bag.jpg', 'R2-D2 Bag');
 new Product('banana.jpg', 'Banana Slicer');
@@ -172,11 +177,30 @@ new Product('usb.gif', 'Tenticle USB Drive');
 new Product('water-can.jpg', 'Inverse Watering Can');
 new Product('wine-glass.jpg', 'Spherical Wine Glass');
 
+// SAVE AND LOAD FUNCTIONS **************************
+function getVotesAndDisplays(product) {
+  if (localStorage.getItem(product.filename)) {
+    const productStats = JSON.parse(localStorage.getItem(product.filename));
+    product.votesAllTime = productStats[0];
+    product.displaysAllTime = productStats[1];
+  }
+}
+
+function saveVotesAndDisplays(product) {
+  const productStats = JSON.stringify([product.votesAllTime, product.displaysAllTime]);
+  localStorage.setItem(product.filename, productStats);
+}
+
+// RUN WHEN PAGE LOADS ******************************
 // generate the voting areas and populate them for the first time
 generateVoteAreas();
 productPicker();
+// get all time totals for votes and displays from localstorage
+Product.allProducts.forEach((product) => {
+  getVotesAndDisplays(product);
+});
 
-// event listeners for voting buttons
+// create event listeners for voting buttons
 for (let i = 0; i < voteBtnArr.length; i++) {
   voteBtnArr[i].addEventListener('click', () => {
     castVote(i);

@@ -115,7 +115,7 @@ function displayResults() {
       voteLabels.push(item.description);
       voteData.push(item.votes);
     }
-    if (item.displays) {
+    if (item.votes) {
       votePercentage.push(Math.floor((item.votes / item.displays) * 100));
       percentageLabels.push(item.description);
     }

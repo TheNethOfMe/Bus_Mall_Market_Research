@@ -80,6 +80,12 @@ h3 {
   width: 60%;
 }
 
+button:hover {
+  background-color: yellow;
+  cursor: pointer;
+  color: red;
+}
+
 /* INFO SECTION */
 .info-section {
   background-color: lightsalmon;

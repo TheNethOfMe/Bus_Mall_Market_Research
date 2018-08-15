@@ -22,6 +22,8 @@ function Product(filename, description) {
   this.description = description;
   this.votes = 0;
   this.displays = 0;
+  this.votesAllTime = 0;
+  this.displaysAllTime = 0;
   Product.allProducts.push(this);
 }
 Product.allProducts = [];
@@ -181,4 +183,17 @@ for (let i = 0; i < voteBtnArr.length; i++) {
   voteBtnArr[i].addEventListener('click', () => {
     castVote(i);
   });
+}
+
+function getVotesAndDisplays(product) {
+  if (localStorage.getItem(product.filename)) {
+    const productStats = JSON.parse(localStorage.getItem(product.filename));
+    product.votesAllTime = productStats[0];
+    product.displaysAllTime = productStats[1];
+  }
+}
+
+function saveVotesAndDisplays(product) {
+  const productStats = JSON.stringify([product.votesAllTime, product.displaysAllTime]);
+  localStorage.setItem(product.filename, productStats);
 }

@@ -55,14 +55,6 @@ function generateVoteAreas(amount) {
   for (let i = 0; i < amount; i++) {
     const newVotingArea = document.createElement('div');
     newVotingArea.classList.add('voting-display');
-    const newVotingButton = document.createElement('button');
-    newVotingButton.innerText = 'VOTE!';
-    newVotingButton.classList.add('voting-button');
-    newVotingButton.addEventListener('click', () => {
-      castVote(i);
-    });
-    voteBtnArr.push(newVotingButton);
-    newVotingArea.appendChild(newVotingButton);
     const newVoteH3 = document.createElement('h3');
     h3Arr.push(newVoteH3);
     newVotingArea.appendChild(newVoteH3);
@@ -70,6 +62,9 @@ function generateVoteAreas(amount) {
     newImgTag.classList.add('product-image');
     imgArr.push(newImgTag);
     newVotingArea.appendChild(newImgTag);
+    newVotingArea.addEventListener('click', () => {
+      castVote(i);
+    });
     votingArea.appendChild(newVotingArea);
   }
 }
@@ -101,7 +96,6 @@ function castVote(idx) {
   clickCounter--;
   const idxNumber = h3Arr[idx].getAttribute('data-productIdx');
   const chosenProduct = Product.allProducts[idxNumber];
-  console.log('Voted for ', idxNumber, chosenProduct);
   chosenProduct.votes++;
   if (clickCounter > 0) {
     productPicker(productCounter);

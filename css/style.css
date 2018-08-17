@@ -58,17 +58,18 @@ section {
 }
 
 .voting-display {
-  background-color: greenyellow;
+  background-color: #333;
   display: inline-block;
   margin: 8px auto;
   width: 23%;
 }
 
-.voting-display button {
-  width: 100%;
+.voting-display:hover {
+  cursor: pointer;
 }
 
 h3 {
+  color: #eee;
   font-family: sans-serif;
   font-weight: bold;
   padding: 4px;
@@ -77,9 +78,15 @@ h3 {
 
 .product-image {
   background-color: black;
+  border-radius: 25px;
   display: block;
-  margin: 0 auto;
-  width: 60%;
+  max-height: 200px;
+  margin: 5px auto;
+  width: 80%;
+}
+
+.product-image:hover {
+  box-shadow: 0 0 20px yellowgreen;
 }
 
 button:hover {

@@ -90,6 +90,7 @@ function productPicker(amount) {
     imgArr[i].src = `img/products/${pickedProduct.filename}`;
     imgArr[i].alt = pickedProduct.description;
     h3Arr[i].innerText = pickedProduct.description;
+    h3Arr[i].setAttribute('data-productIdx', j);
     pickedProduct.displays += 1;
   }
   indexTracker = currentDisplays;
@@ -98,11 +99,9 @@ function productPicker(amount) {
 // function for casting vote
 function castVote(idx) {
   clickCounter--;
-  const chosenProduct = Product.allProducts.find((product) => {
-    if (product.description === h3Arr[idx].innerText) {
-      return product;
-    }
-  });
+  const idxNumber = h3Arr[idx].getAttribute('data-productIdx');
+  const chosenProduct = Product.allProducts[idxNumber];
+  console.log('Voted for ', idxNumber, chosenProduct);
   chosenProduct.votes++;
   if (clickCounter > 0) {
     productPicker(productCounter);

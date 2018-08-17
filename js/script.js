@@ -46,7 +46,6 @@ voteCounter.innerText = clickCounter;
 
 // variables to hold arrays of dynamically generated elements
 const votingArea = document.getElementById('voting-area');
-const voteBtnArr = [];
 const h3Arr = [];
 const imgArr = [];
 

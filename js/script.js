@@ -1,16 +1,48 @@
 'use strict';
 
-// CODE FOR WEB SITE GENERATION *****************************
-// create clickCounter and appends it to the h2 for the user
-const voteCounter = document.getElementById('votes-remain');
-let clickCounter = 25;
-voteCounter.innerText = clickCounter;
-
+// CODE TO START GAME ***************************************
 // grab sections
 const votePanel = document.getElementById('vote-panel');
 const votesChart = document.getElementsByTagName('canvas')[0].getContext('2d');
 const percentageChart = document.getElementsByTagName('canvas')[1].getContext('2d');
 const informationPanel = document.getElementById('information');
+
+// variables for the game starting area
+let productCounter = 3;
+const productAmount = document.getElementById('product-amount');
+const incrementProduct = document.getElementById('increment-product-btn');
+const decrementProduct = document.getElementById('decrement-product-btn');
+const startButton = document.getElementById('start-button');
+productAmount.innerText = productCounter;
+
+// increment and decrement products
+incrementProduct.addEventListener('click', () => {
+  if (productCounter < 10) {
+    productCounter++;
+    productAmount.innerText = productCounter;
+  }
+});
+
+decrementProduct.addEventListener('click', () => {
+  if (productCounter > 3) {
+    productCounter--;
+    productAmount.innerText = productCounter;
+  }
+});
+
+// start the game and generate the voting areas for the first time
+startButton.addEventListener('click', () => {
+  votePanel.classList.remove('hidden');
+  informationPanel.classList.add('hidden');
+  generateVoteAreas(productCounter);
+  productPicker(productCounter);
+});
+
+// CODE FOR WEB SITE GENERATION *****************************
+// create clickCounter and appends it to the h2 for the user
+const voteCounter = document.getElementById('votes-remain');
+let clickCounter = 25;
+voteCounter.innerText = clickCounter;
 
 // variables to hold arrays of dynamically generated elements
 const votingArea = document.getElementById('voting-area');
@@ -19,13 +51,16 @@ const h3Arr = [];
 const imgArr = [];
 
 // function to generate voting areas
-function generateVoteAreas() {
-  for (let i = 0; i < 3; i++) {
+function generateVoteAreas(amount) {
+  for (let i = 0; i < amount; i++) {
     const newVotingArea = document.createElement('div');
     newVotingArea.classList.add('voting-display');
     const newVotingButton = document.createElement('button');
     newVotingButton.innerText = 'VOTE!';
     newVotingButton.classList.add('voting-button');
+    newVotingButton.addEventListener('click', () => {
+      castVote(i);
+    });
     voteBtnArr.push(newVotingButton);
     newVotingArea.appendChild(newVotingButton);
     const newVoteH3 = document.createElement('h3');
@@ -42,10 +77,10 @@ function generateVoteAreas() {
 // CODE FOR PLACING IMAGES ON SITE & VOTING ***********************
 // places random products
 let indexTracker = [];
-function productPicker() {
+function productPicker(amount) {
   let currentDisplays = [];
   const previousDisplay = indexTracker;
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < amount; i++) {
     let j;
     do {
       j = Math.floor(Math.random() * Product.allProducts.length);
@@ -61,16 +96,16 @@ function productPicker() {
 }
 
 // function for casting vote
-function castVote(x) {
+function castVote(idx) {
   clickCounter--;
   const chosenProduct = Product.allProducts.find((product) => {
-    if (product.description === h3Arr[x].innerText) {
+    if (product.description === h3Arr[idx].innerText) {
       return product;
     }
   });
   chosenProduct.votes++;
   if (clickCounter > 0) {
-    productPicker();
+    productPicker(productCounter);
   } else {
     displayResults();
   }
@@ -101,7 +136,6 @@ function displayResults() {
   finalResult.forEach((item) => {
     item.votesAllTime += item.votes;
     item.displaysAllTime += item.displays;
-    console.log(item.filename, item.displaysAllTime);
     if (item.votes) {
       voteLabels.push(item.description);
       voteData.push(item.votes);
@@ -191,18 +225,7 @@ function saveVotesAndDisplays(product) {
   localStorage.setItem(product.filename, productStats);
 }
 
-// RUN WHEN PAGE LOADS ******************************
-// generate the voting areas and populate them for the first time
-generateVoteAreas();
-productPicker();
-// get all time totals for votes and displays from localstorage
+// get data when page loads
 Product.allProducts.forEach((product) => {
   getVotesAndDisplays(product);
 });
-
-// create event listeners for voting buttons
-for (let i = 0; i < voteBtnArr.length; i++) {
-  voteBtnArr[i].addEventListener('click', () => {
-    castVote(i);
-  });
-}

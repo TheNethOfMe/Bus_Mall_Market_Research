@@ -52,14 +52,16 @@ section {
   background-color: blue;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  width: 95%;
   margin: 8px;
 }
 
 .voting-display {
   background-color: greenyellow;
   display: inline-block;
-  margin: 8px;
-  width: 90%;
+  margin: 8px auto;
+  width: 23%;
 }
 
 .voting-display button {
@@ -91,11 +93,21 @@ button:hover {
   background-color: lightsalmon;
   display: flex;
   flex-direction: row;
+  text-align: center;
   width: 100%;
 }
 
 .info-area {
   width: 90%;
+}
+
+.info-button {
+  margin: 5px;
+}
+
+#start-button {
+  padding: 5px;
+  width: 50%;
 }
 
 p {

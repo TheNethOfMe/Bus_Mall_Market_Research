@@ -13,7 +13,7 @@
     <h1>BusMall Marketing Research</h1>
   </header>
   <main>
-    <section id="vote-panel" class="voting-section">
+    <section id="vote-panel" class="voting-section hidden">
       <h2>Please Make a Selection <span id="votes-remain"></span></h2>
       <div class="voting-group" id="voting-area">
         <!-- Voting areas will display here -->
@@ -21,17 +21,23 @@
     </section>
     <section class="info-section">
       <div class="info-area">
-        <h2>Welcome and Thank You for Your Participation</h2>
         <div id="information">
+          <h2>Welcome</h2>
           <p>
-            Lorem ipsum dolor amet deep v meditation gochujang tilde. Gentrify cred aesthetic cloud bread cronut tousled scenester kitsch tofu gochujang whatever brooklyn live-edge bitters roof party. Shoreditch prism drinking vinegar banjo offal keytar brunch bitters franzen cold-pressed everyday carry. Cornhole craft beer four loko, irony scenester portland echo park gentrify. Whatever chicharrones helvetica vape.
+            You are going to be shown a series of products at random. For each group of products shown, choose the product you think you would be most likely to purchase if offered through our service. After 25 selections, you will be shown a chart detailing what you voted for.
           </p>
           <p>
-            3 wolf moon microdosing brunch, poke sriracha neutra venmo stumptown vegan 8-bit pug palo santo. Ramps four dollar toast butcher, hell of PBR&B fixie chartreuse unicorn 3 wolf moon chicharrones lyft quinoa bitters tilde cray. Edison bulb semiotics fanny pack iPhone. Bespoke health goth intelligentsia sustainable hashtag cliche next level, food truck stumptown selvage unicorn bicycle rights.
+            Your opinion matters to us and we thank you for participating in our marketing research.
           </p>
           <p>
-            90's hella enamel pin, swag umami green juice offal. Prism DIY wolf 3 wolf moon food truck vinyl fingerstache waistcoat craft beer green juice man braid jianbing. Forage austin iPhone, plaid snackwave meh taxidermy try-hard. Hell of microdosing letterpress, sustainable la croix tacos deep v listicle DIY tbh pug taiyaki gluten-free banh mi authentic. XOXO austin pinterest, selvage you probably haven't heard of them adaptogen paleo. Gochujang paleo cray gentrify 8-bit.
+            Select the number of products (bewteen 3 and 10) you want shown below. 
           </p>
+          <div>
+            <button class="info-button" id="decrement-product-btn">-1</button>
+            <span id="product-amount"></span>
+            <button class="info-button" id="increment-product-btn">+1</button>
+          </div>
+          <button class="info-button" id="start-button">START!</button>
         </div>
         <div>
           <canvas id="votes-chart"></canvas>
